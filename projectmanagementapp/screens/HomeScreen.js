@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, FlatList, Image, StatusBar } from 'react-native';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const boards = [
     { id: '1', name: 'Website Redesign', color: '#6366F1', tasks: 5 },
     { id: '2', name: 'Mobile App', color: '#10B981', tasks: 12 },
@@ -17,14 +17,12 @@ const HomeScreen = () => {
     >
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.overlay}>
-        {/* Added top spacer to push content down */}
         <View style={styles.topSpacer} />
         
-        {/* Header */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Good Morning</Text>
-            <Text style={styles.username}>Alex Johnson</Text>
+            <Text style={styles.username}>Rumesha Riaz</Text>
           </View>
           <TouchableOpacity style={styles.profileButton}>
             <Image 
@@ -34,7 +32,6 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
             <Text style={styles.statNumber}>7</Text>
@@ -46,13 +43,11 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Feather name="search" size={20} color="#94A3B8" />
           <Text style={styles.searchPlaceholder}>Search boards...</Text>
         </View>
 
-        {/* Boards Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Boards</Text>
           <TouchableOpacity>
@@ -65,7 +60,10 @@ const HomeScreen = () => {
           numColumns={2}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={[styles.boardCard, { backgroundColor: item.color }]}>
+            <TouchableOpacity 
+              style={[styles.boardCard, { backgroundColor: item.color }]}
+              onPress={() => navigation.navigate('BoardScreen', { boardName: item.name })}
+            >
               <Text style={styles.boardName}>{item.name}</Text>
               <Text style={styles.boardTasks}>{item.tasks} tasks</Text>
               <View style={styles.boardOverlay} />
@@ -74,7 +72,6 @@ const HomeScreen = () => {
           contentContainerStyle={styles.boardsContainer}
         />
 
-        {/* Add New Board Button */}
         <TouchableOpacity style={styles.addButton}>
           <MaterialIcons name="add" size={28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -92,29 +89,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
     paddingHorizontal: 20,
-    paddingTop: StatusBar.currentHeight, // Automatically adjust for status bar height
+    paddingTop: StatusBar.currentHeight,
   },
   topSpacer: {
-    height: 10, // Additional spacing if needed
+    height: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20, // Reduced from 25
+    marginBottom: 20,
   },
   greeting: {
     fontSize: 16,
     color: '#64748B',
   },
   username: {
-    fontSize: 20, // Slightly smaller
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1E293B',
     marginTop: 4,
   },
   profileButton: {
-    width: 42, // Smaller
+    width: 42,
     height: 42,
     borderRadius: 21,
     overflow: 'hidden',
@@ -126,13 +123,13 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20, // Reduced from 25
+    marginBottom: 20,
   },
   statCard: {
     width: '48%',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 14, // Slightly less padding
+    padding: 14,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -140,13 +137,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   statNumber: {
-    fontSize: 22, // Slightly smaller
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#1E293B',
     marginBottom: 4,
   },
   statLabel: {
-    fontSize: 13, // Smaller
+    fontSize: 13,
     color: '#64748B',
   },
   searchContainer: {
@@ -156,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginBottom: 20, // Reduced from 25
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -166,16 +163,16 @@ const styles = StyleSheet.create({
   searchPlaceholder: {
     marginLeft: 10,
     color: '#94A3B8',
-    fontSize: 15, // Slightly smaller
+    fontSize: 15,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12, // Reduced from 16
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 17, // Slightly smaller
+    fontSize: 17,
     fontWeight: '600',
     color: '#1E293B',
   },
@@ -184,14 +181,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   boardsContainer: {
-    paddingBottom: 15, // Reduced from 20
+    paddingBottom: 15,
   },
   boardCard: {
     flex: 1,
-    margin: 5, // Reduced from 6
-    height: 130, // Slightly shorter
+    margin: 5,
+    height: 130,
     borderRadius: 12,
-    padding: 14, // Reduced from 16
+    padding: 14,
     overflow: 'hidden',
     position: 'relative',
   },
@@ -200,22 +197,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   boardName: {
-    fontSize: 15, // Slightly smaller
+    fontSize: 15,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 6, // Reduced from 8
+    marginBottom: 6,
     zIndex: 1,
   },
   boardTasks: {
-    fontSize: 13, // Smaller
+    fontSize: 13,
     color: 'rgba(255,255,255,0.9)',
     zIndex: 1,
   },
   addButton: {
     position: 'absolute',
-    right: 20, // Reduced from 25
-    bottom: 20, // Reduced from 25
-    width: 52, // Slightly smaller
+    right: 20,
+    bottom: 20,
+    width: 52,
     height: 52,
     borderRadius: 26,
     backgroundColor: '#6366F1',

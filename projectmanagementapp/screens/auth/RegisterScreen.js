@@ -56,7 +56,7 @@ const RegisterScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.registerButton} onPress={() => console.log('Register pressed')}>
+      <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('HomeScreen')}>
         <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
 
