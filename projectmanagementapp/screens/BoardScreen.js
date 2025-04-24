@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView, TextInput, Image, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView, TextInput, Image,Animated, StatusBar } from 'react-native';
 import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { DraxProvider, DraxList } from 'react-native-drax';
+import { DraxProvider, DraxView, DraxScrollView, DraxList  } from 'react-native-drax';
 
 const BoardScreen = ({ navigation, route }) => {
   const { boardName = 'Website Redesign' } = route.params || {};
@@ -135,21 +135,23 @@ const BoardScreen = ({ navigation, route }) => {
 
                 <DraxList
                   data={column.cards}
-                  renderItemContent={({ item }) => (
-                    <TouchableOpacity
-                      style={styles.card}
-                      onPress={() => navigation.navigate('TaskDetailScreen', { task: item })}
-                    >
-                      <Text style={styles.cardTitle}>{item.title}</Text>
-                      {item.description ? (
-                        <Text style={styles.cardDescription}>{item.description}</Text>
-                      ) : null}
-                      <View style={styles.cardFooter}>
-                        <Feather name="message-square" size={14} color="#94A3B8" />
-                        <Text style={styles.cardComments}>2</Text>
-                      </View>
-                    </TouchableOpacity>
+                  renderItemContent={({ item, index }) => (
+                    <Animated.View style={styles.card}> {/* ✅ Native wrapper for measureLayout */}
+                      <TouchableOpacity onPress={() => navigation.navigate('TaskDetailScreen', { task: item })}>
+                        <Text style={styles.cardTitle}>{item.title}</Text>
+                        {item.description ? (
+                          <Text style={styles.cardDescription}>{item.description}</Text>
+                        ) : null}
+                        <View style={styles.cardFooter}>
+                          <Feather name="message-square" size={14} color="#94A3B8" />
+                          <Text style={styles.cardComments}>2</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </Animated.View>
                   )}
+                  
+                  
+                  
                   onItemDragEnd={handleDragEnd}
                   keyExtractor={(item) => item.id}
                   style={styles.cardList}

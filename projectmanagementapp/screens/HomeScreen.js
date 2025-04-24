@@ -1,13 +1,33 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, FlatList, Image, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, FlatList, Image, StatusBar, Modal, TextInput } from 'react-native';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 const HomeScreen = ({ navigation }) => {
-  const boards = [
+  const initialBoards = [
     { id: '1', name: 'Website Redesign', color: '#6366F1', tasks: 5 },
     { id: '2', name: 'Mobile App', color: '#10B981', tasks: 12 },
     { id: '3', name: 'Marketing Plan', color: '#F59E0B', tasks: 8 },
     { id: '4', name: 'Product Roadmap', color: '#EC4899', tasks: 3 },
+  ];
+
+  const [allBoards, setAllBoards] = useState(initialBoards);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [boardName, setBoardName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const activeProjects = [
+    { id: '1', name: 'Website Redesign', progress: 65, dueDate: '2023-06-15' },
+    { id: '2', name: 'Mobile App', progress: 30, dueDate: '2023-06-30' },
+    { id: '3', name: 'Marketing Plan', progress: 80, dueDate: '2023-06-10' },
+    { id: '4', name: 'Product Roadmap', progress: 45, dueDate: '2023-07-01' },
+  ];
+
+  const todaysTasks = [
+    { id: '1', project: 'Website Redesign', title: 'Update homepage design', completed: false },
+    { id: '2', project: 'Mobile App', title: 'Fix login screen bug', completed: true },
+    { id: '3', project: 'Marketing Plan', title: 'Review social media content', completed: false },
+    { id: '4', project: 'Product Roadmap', title: 'Prepare Q3 roadmap', completed: false },
+    { id: '5', project: 'Website Redesign', title: 'Meet with client', completed: false },
   ];
 
   return (
@@ -18,35 +38,52 @@ const HomeScreen = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.overlay}>
         <View style={styles.topSpacer} />
-        
+
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Good Morning</Text>
             <Text style={styles.username}>Rumesha Riaz</Text>
           </View>
-          <TouchableOpacity style={styles.profileButton}
-            onPress={() => navigation.navigate('ProfileSettingsScreen')} >
-            <Image 
-              source={require('../assets/images/profile.jpg')} 
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => navigation.navigate('ProfileSettingsScreen')}
+          >
+            <Image
+              source={require('../assets/images/profile.jpg')}
               style={styles.profileImage}
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>7</Text>
+          <TouchableOpacity
+            style={styles.statCard}
+            onPress={() => navigation.navigate('ActiveProjectsScreen', { projects: activeProjects })}
+          >
+            <Text style={styles.statNumber}>{activeProjects.length}</Text>
             <Text style={styles.statLabel}>Active Projects</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>23</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.statCard}
+            onPress={() => navigation.navigate('TodaysTasksScreen', { tasks: todaysTasks })}
+          >
+            <Text style={styles.statNumber}>
+              {todaysTasks.filter(task => !task.completed).length}
+            </Text>
             <Text style={styles.statLabel}>Tasks Today</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.searchContainer}>
           <Feather name="search" size={20} color="#94A3B8" />
-          <Text style={styles.searchPlaceholder}>Search boards...</Text>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search boards..."
+            placeholderTextColor="#94A3B8"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
 
         <View style={styles.sectionHeader}>
@@ -57,11 +94,13 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <FlatList
-          data={boards}
+          data={allBoards.filter(board =>
+            board.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )}
           numColumns={2}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.boardCard, { backgroundColor: item.color }]}
               onPress={() => navigation.navigate('BoardScreen', { boardName: item.name })}
             >
@@ -73,9 +112,50 @@ const HomeScreen = ({ navigation }) => {
           contentContainerStyle={styles.boardsContainer}
         />
 
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
           <MaterialIcons name="add" size={28} color="#FFFFFF" />
         </TouchableOpacity>
+
+        <Modal
+          visible={modalVisible}
+          transparent
+          animationType="slide"
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Add New Board</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Board name"
+                placeholderTextColor="#94A3B8"
+                value={boardName}
+                onChangeText={setBoardName}
+              />
+              <TouchableOpacity
+                style={styles.modalAddButton}
+                onPress={() => {
+                  if (boardName.trim() !== '') {
+                    const newBoard = {
+                      id: Date.now().toString(),
+                      name: boardName,
+                      color: '#0EA5E9',
+                      tasks: 0,
+                    };
+                    setAllBoards([...allBoards, newBoard]);
+                    setBoardName('');
+                    setModalVisible(false);
+                  }
+                }}
+              >
+                <Text style={styles.modalAddButtonText}>Add</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
       </View>
     </ImageBackground>
   );
@@ -92,19 +172,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: StatusBar.currentHeight,
   },
-  topSpacer: {
-    height: 10,
-  },
+  topSpacer: { height: 10 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
-  greeting: {
-    fontSize: 16,
-    color: '#64748B',
-  },
+  greeting: { fontSize: 16, color: '#64748B' },
   username: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -153,7 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 5,
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -161,9 +236,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  searchPlaceholder: {
+  searchInput: {
+    flex: 1,
     marginLeft: 10,
-    color: '#94A3B8',
+    color: '#1E293B',
     fontSize: 15,
   },
   sectionHeader: {
@@ -181,9 +257,7 @@ const styles = StyleSheet.create({
     color: '#6366F1',
     fontSize: 14,
   },
-  boardsContainer: {
-    paddingBottom: 15,
-  },
+  boardsContainer: { paddingBottom: 15 },
   boardCard: {
     flex: 1,
     margin: 5,
@@ -224,6 +298,52 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    width: '85%',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#1E293B',
+  },
+  modalInput: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 16,
+    fontSize: 16,
+    color: '#1E293B',
+  },
+  modalAddButton: {
+    backgroundColor: '#6366F1',
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  modalAddButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  modalCancelText: {
+    marginTop: 12,
+    color: '#64748B',
+    fontSize: 14,
   },
 });
 

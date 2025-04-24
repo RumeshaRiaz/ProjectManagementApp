@@ -9,6 +9,8 @@ import BoardScreen from './screens/BoardScreen';
 import TaskDetailScreen from './screens/TaskDetailScreen';
 import CollaborationScreen from './screens/CollaborationScreen';
 import ProfileSettingsScreen from './screens/ProfileSettingsScreen';
+import ActiveProjectsScreen from './screens/ActiveProjectsScreen';
+import TodaysTasksScreen from './screens/TodaysTasksScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +31,8 @@ const App = () => {
         <Stack.Screen name="BoardScreen" component={BoardScreen}/>
         <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen}/>
         <Stack.Screen name="CollaborationScreen" component={CollaborationScreen}/>
+        <Stack.Screen name="ActiveProjectsScreen" component={ActiveProjectsScreen}/>
+        <Stack.Screen name="TodaysTasksScreen" component={TodaysTasksScreen}/>
         
       </Stack.Navigator>
     </NavigationContainer>
