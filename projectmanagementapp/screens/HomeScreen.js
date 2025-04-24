@@ -24,7 +24,8 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.greeting}>Good Morning</Text>
             <Text style={styles.username}>Rumesha Riaz</Text>
           </View>
-          <TouchableOpacity style={styles.profileButton}>
+          <TouchableOpacity style={styles.profileButton}
+            onPress={() => navigation.navigate('ProfileSettingsScreen')} >
             <Image 
               source={require('../assets/images/profile.jpg')} 
               style={styles.profileImage}

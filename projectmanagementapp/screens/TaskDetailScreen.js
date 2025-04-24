@@ -98,6 +98,15 @@ const TaskDetailScreen = ({ navigation, route }) => {
             </View>
           </View>
 
+          {/* Collaboration Button - NEW ADDITION */}
+          <TouchableOpacity 
+            style={styles.collaborationButton}
+            onPress={() => navigation.navigate('CollaborationScreen', { task: currentTask })}
+          >
+            <Feather name="message-square" size={20} color="#FFFFFF" />
+            <Text style={styles.collaborationButtonText}>Discuss</Text>
+          </TouchableOpacity>
+
           {/* Main Content */}
           <ScrollView 
             contentContainerStyle={styles.container}
@@ -336,11 +345,12 @@ const TaskDetailScreen = ({ navigation, route }) => {
   );
 };
 
-// Updated Styles
+// Styles
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+    resizeMode: 'cover',
   },
   backgroundImage: {
     flex: 1,
@@ -348,7 +358,8 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.97)',
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    paddingTop: StatusBar.currentHeight,
   },
   header: {
     flexDirection: 'row',
@@ -373,6 +384,30 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     marginLeft: 16,
+  },
+  // NEW COLLABORATION BUTTON STYLES
+  collaborationButton: {
+    position: 'absolute',
+    right: 80,
+    top: 58,
+    backgroundColor: '#6366F1',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  collaborationButtonText: {
+    color: '#FFFFFF',
+    marginLeft: 6,
+    fontSize: 14,
+    fontWeight: '500',
   },
   container: {
     padding: 16,
